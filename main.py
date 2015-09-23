@@ -51,7 +51,7 @@ class lazybot(object):
     def reddit_connect(self, sub):
         ''' Connects to Reddit API '''
 
-        user_agent = 'Fetching mod-related info for Slack v 2.0.b /u/exoendo'
+        agent = 'Fetching mod-related info for Slack v 2.0.b /u/exoendo'
         self.r = praw.Reddit(user_agent=agent)
 
         scope_list = ['read', 'modlog', 'privatemessages', 'submit']
