@@ -55,11 +55,20 @@ class lazybot(object):
         self.r = praw.Reddit(user_agent=agent)
 
         scope_list = ['read', 'modlog', 'privatemessages', 'submit']
-        self.oauth = pmini(self.r, app_key=os.environ['app_key'],
-                           app_secret=os.environ['app_secret'],
-                           access_token=os.environ['access_token'],
-                           refresh_token=os.environ['refresh_token'],
-                           scopes=scope_list)
+        
+        try:
+            self.oauth = pmini(self.r, app_key=os.environ['app_key'],
+                               app_secret=os.environ['app_secret'],
+                               access_token=os.environ['access_token'],
+                               refresh_token=os.environ['refresh_token'],
+                               scopes=scope_list)
+            print 'ouath successful'
+        
+        except Exception as e:
+            print str(e)
+            print 'ouath Failed'
+            exit()
+
 
         self.subreddit = self.r.get_subreddit(sub)
 
@@ -210,11 +219,9 @@ class lazybot(object):
     def run(self):
         while True:
 
-            try:
-                self.oauth.refresh()
-                print 'Refreshed'
-            except Exception as e:
-                print str(e)
+
+            self.oauth.refresh()
+
             data = self.sc.rtm_read()
 
             if not data:
