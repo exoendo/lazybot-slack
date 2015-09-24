@@ -210,7 +210,11 @@ class lazybot(object):
     def run(self):
         while True:
 
-            self.oauth.refresh()
+            try:
+                self.oauth.refresh()
+                print 'Refreshed'
+            except Exception as e:
+                print str(e)
             data = self.sc.rtm_read()
 
             if not data:
