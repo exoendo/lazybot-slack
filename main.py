@@ -5,7 +5,6 @@ import re
 import os
 import json
 import time
-import socket
 import collections
 import praw
 from prawoauth2 import PrawOAuth2Mini as pmini
@@ -19,7 +18,7 @@ from slackclient import SlackClient
 # as_user=True means it will post as 'lazybot'
 # if this is not enabled, slack makes it appear as 'Bot'
 #
-# slackclient has some simple methods but they suck
+# slackclient has some simple methods but they are meh
 # sc.api_call is like the catch-all that basically works with
 # everything here: https://api.slack.com/methods
 #
