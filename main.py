@@ -195,16 +195,17 @@ class lazybot(object):
               ping_name, count)
 
         self.sc.api_call('chat.postMessage', as_user=True,
-                         channel=data[0]['channel'], text=msg)
+                         channel=chan, text=msg)
 
     def unmod(self, data):
         ''' Fetches the count for unmoderated '''
 
-        self.sc.api_call('chat.postMessage', as_user=True,
-                         channel=data[0]['channel'], text='(One moment...)')
-
         user_id = data[0]['user']
         ping_name = self.d[user_id]
+        chan = data[0]['channel']
+
+        self.sc.api_call('chat.postMessage', as_user=True,
+                         channel=chan, text='(One moment...)')
 
         count = 0
         for item in self.subreddit.get_unmoderated(limit=None):
@@ -212,7 +213,7 @@ class lazybot(object):
         msg = '<@{}>: There are currently {} items in the unmodqueue'.format(
               ping_name, count)
         self.sc.api_call('chat.postMessage', as_user=True,
-                         channel=data[0]['channel'], text=msg)
+                         channel=chan, text=msg)
 
     def run(self):
         while True:
