@@ -3,8 +3,10 @@
 
 import re
 import os
+import sys
 import json
 import time
+import signal
 import collections
 import praw
 from prawoauth2 import PrawOAuth2Mini as pmini
@@ -61,7 +63,10 @@ class lazybot(object):
                                access_token=os.environ['access_token'],
                                refresh_token=os.environ['refresh_token'],
                                scopes=scope_list)
-            print 'ouath successful'
+            if self.oauth:
+                print '\n\n-->ouath successful\n\n'
+            else:
+                print '\n\n-->oauth failed\n\n'
 
         except Exception as e:
             print str(e)
@@ -69,6 +74,14 @@ class lazybot(object):
             exit()
 
         self.subreddit = self.r.get_subreddit(sub)
+
+    def handle(self, signum, frame):
+        '''This is for the abrupt heroku SIGTERMS '''
+
+        msg = 'Lazybot needs to restart. Will be back in a few moments'
+        self.sc.api_call('chat.postMessage', as_user=True,
+                         channel=chan, text=msg)
+        sys.exit(0)
 
     def fullmods(self, data):
         ''' Fetches a list of Full Mods from politicsmod '''
@@ -216,6 +229,7 @@ class lazybot(object):
                          channel=chan, text=msg)
 
     def run(self):
+        signal.signal(signal.SIGTERM, self.handle)
         while True:
             self.oauth.refresh()
             data = self.sc.rtm_read()
@@ -253,8 +267,9 @@ class lazybot(object):
                 if self.oauth.refresh():
                     print '\n\nrefreshed...\n\n'
                 else:
-                    self.sc.api_call('chat.postMessage', channel=chan,
-                        text='Problem authenticating with Reddit...')
+                    msg = 'Problem authenticating with Reddit...'
+                    self.sc.api_call('chat.postMessage', as_user=True,
+                                     channel=chan, text=msg)
 
 if __name__ == "__main__":
     b = lazybot(os.environ['slack_token'])
