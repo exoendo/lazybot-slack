@@ -227,6 +227,7 @@ class lazybot(object):
             elif 'text' not in data[0]:
                 continue
             print data
+            chan = data[0]['channel']
 
             try:
 
@@ -252,8 +253,8 @@ class lazybot(object):
                 if self.oauth.refresh():
                     print '\n\nrefreshed...\n\n'
                 else:
-                    self.sc.api_call('chat.postMessage', channel=self.channel,
-                                    text='Problem authenticating with Reddit...')
+                    self.sc.api_call('chat.postMessage', channel=chan,
+                        text='Problem authenticating with Reddit...')
 
 if __name__ == "__main__":
     b = lazybot(os.environ['slack_token'])
