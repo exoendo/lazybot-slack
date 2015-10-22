@@ -80,7 +80,7 @@ class lazybot(object):
 
         msg = 'Lazybot needs to restart. Will be back in a few moments'
         self.sc.api_call('chat.postMessage', as_user=True,
-                         channel=chan, text=msg)
+                         channel='C039KQ6EK', text=msg)
         sys.exit(0)
 
     def fullmods(self, data):
