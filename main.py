@@ -228,22 +228,29 @@ class lazybot(object):
                 continue
             print data
 
-            if re.match(r'~fullmods', data[0]['text']):
-                self.fullmods(data)
+            try:
 
-            elif re.match(r'~unmod', data[0]['text']):
-                self.unmod(data)
+                if re.match(r'~fullmods', data[0]['text']):
+                    self.fullmods(data)
 
-            elif re.match(r'~modlog \d+$', data[0]['text']):
-                self.modlog(data)
+                elif re.match(r'~unmod', data[0]['text']):
+                    self.unmod(data)
 
-            elif re.match(r'~modque', data[0]['text']):
-                self.modque(data)
+                elif re.match(r'~modlog \d+$', data[0]['text']):
+                    self.modlog(data)
 
-            elif re.match(r'~modmail', data[0]['text']):
-                self.modmail(data)
+                elif re.match(r'~modque', data[0]['text']):
+                    self.modque(data)
 
-            time.sleep(1)
+                elif re.match(r'~modmail', data[0]['text']):
+                    self.modmail(data)
+
+                time.sleep(1)
+
+            except praw.errors.OAuthInvalidToken:
+                print 'invalid token'
+                self.oauth.refresh()
+                print '\n\nrefreshed...\n\n'
 
 if __name__ == "__main__":
     b = lazybot(os.environ['slack_token'])
