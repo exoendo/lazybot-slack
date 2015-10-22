@@ -249,8 +249,11 @@ class lazybot(object):
 
             except praw.errors.OAuthInvalidToken:
                 print 'invalid token'
-                self.oauth.refresh()
-                print '\n\nrefreshed...\n\n'
+                if self.oauth.refresh():
+                    print '\n\nrefreshed...\n\n'
+                else:
+                    self.sc.api_call('chat.postMessage', channel=self.channel,
+                                    text='Problem authenticating with Reddit...')
 
 if __name__ == "__main__":
     b = lazybot(os.environ['slack_token'])
