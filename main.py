@@ -75,17 +75,8 @@ class lazybot(object):
 
         self.subreddit = self.r.get_subreddit(sub)
 
-    def handle(self, signum, frame):
-        '''This is for the abrupt heroku SIGTERMS '''
-
-        msg = 'Lazybot needs to restart. Will be back in a few moments'
-        self.sc.api_call('chat.postMessage', as_user=True,
-                         channel='C039KQ6EK', text=msg)
-        sys.exit(0)
-
-
     def actions(self, data):
-    ''' Fetches relevant modlog actions made on a link in last 25 hours '''
+        ''' Fetches relevant modlog actions made on a link in last 25 hours '''
 
         user_id = data[0]['user']
         ping_name = self.d[user_id]
@@ -110,6 +101,7 @@ class lazybot(object):
         msg = ('<@{}>: Actions over last 25 hours '
                '(earliest first): '.format(ping_name))
         action_list = []
+
         for item in self.subreddit.get_mod_log(limit=None):
             time_diff = now - item.created_utc
 
@@ -129,15 +121,24 @@ class lazybot(object):
             action_list.reverse()
             for item in action_list:
                 msg += item
-                self.sc.api_call('chat.postMessage', as_user=True,
-                                 channel=chan, text=msg)
+            self.sc.api_call('chat.postMessage', as_user=True,
+                             channel=chan, text=msg)
         else:
             msg = ('<@{}>: No actions have been performed on this '
                    'submission in the last 25 hours '
                    '(or at all...)'.format(ping_name))
 
             self.sc.api_call('chat.postMessage', as_user=True,
-                              channel=chan, text=msg)
+                             channel=chan, text=msg)
+
+    def handle(self, signum, frame):
+        ''' This is for the abrupt heroku SIGTERMS '''
+
+        chan = data[0]['channel']
+        msg = 'Lazybot needs to restart. Will be back in a few moments'
+        self.sc.api_call('chat.postMessage', as_user=True,
+                         channel=chan, text=msg)
+        sys.exit(0)
 
     def fullmods(self, data):
         ''' Fetches a list of Full Mods from politicsmod '''
@@ -315,6 +316,9 @@ class lazybot(object):
 
                 elif re.match(r'~modmail', data[0]['text']):
                     self.modmail(data)
+
+                elif re.match(r'~actions', data[0]['text']):
+                    self.actions(data)
 
                 time.sleep(1)
 
