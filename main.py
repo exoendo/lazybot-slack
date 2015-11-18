@@ -83,6 +83,62 @@ class lazybot(object):
                          channel='C039KQ6EK', text=msg)
         sys.exit(0)
 
+
+    def actions(self, data):
+    ''' Fetches relevant modlog actions made on a link in last 25 hours '''
+
+        user_id = data[0]['user']
+        ping_name = self.d[user_id]
+        chan = data[0]['channel']
+
+        self.sc.api_call('chat.postMessage', as_user=True,
+                         channel=chan, text='(One moment...)')
+
+        link = data[0]['text'].split('~actions')[1]
+
+        if re.search(r'/comments/\w+/', link):
+            link_id = link.split('comments/')[1][:6]
+        elif re.search(r'redd\.it/\w+', link):
+            link_id = link.split('.it/')[1][:6]
+        else:
+            msg = '<@{}>: You provided an invalid link...'.format(ping_name)
+            self.sc.api_call('chat.postMessage', as_user=True,
+                             channel=chan, text=msg)
+            return
+
+        now = time.time()
+        msg = ('<@{}>: Actions over last 25 hours '
+               '(earliest first): '.format(ping_name))
+        action_list = []
+        for item in self.subreddit.get_mod_log(limit=None):
+            time_diff = now - item.created_utc
+
+            if time_diff / 3600 > 25:
+                break
+            if item.target_fullname is None:
+                continue
+            if item.target_fullname[3:] == link_id:
+                if item.action != 'removelink' and item.action != 'approvelink':
+                    continue
+                mod_name = u'{}\u200B{}'.format(item.mod[0], item.mod[1:])
+                mod_name = mod_name.encode('utf-8', 'ignore')
+                entry = '*{}:* {} | '.format(mod_name, item.action)
+                action_list.append(entry)
+
+        if len(action_list) > 0:
+            action_list.reverse()
+            for item in action_list:
+                msg += item
+                self.sc.api_call('chat.postMessage', as_user=True,
+                                 channel=chan, text=msg)
+        else:
+            msg = ('<@{}>: No actions have been performed on this '
+                   'submission in the last 25 hours '
+                   '(or at all...)'.format(ping_name))
+
+            self.sc.api_call('chat.postMessage', as_user=True,
+                              channel=chan, text=msg)
+
     def fullmods(self, data):
         ''' Fetches a list of Full Mods from politicsmod '''
 
