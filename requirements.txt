@@ -1,4 +1,4 @@
-praw==3.1.0
+praw==3.2.1
 prawoauth2==0.1.5
 slackclient==0.16
 websocket-client==0.32.0
