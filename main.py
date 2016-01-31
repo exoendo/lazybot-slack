@@ -27,7 +27,7 @@ from slackclient import SlackClient
 #
 # This also uses Real Time Messaging API
 
-logging.basicConfig(filename='logs.log', level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
 
 
 class lazybot(object):
