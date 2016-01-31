@@ -181,11 +181,17 @@ class lazybot(object):
         # split at modlog convert number to int
         hours = int(data[0]['text'].split('~modlog')[1])
 
-        if hours > 168:
-            msg = '<@{}>: lazybot caps at 168 hours :)'.format(ping_name)
+        if hours > 672:
+            msg = '<@{}>: lazybot caps at 672 hours :)'.format(ping_name)
             self.sc.api_call('chat.postMessage', as_user=True,
                              channel=chan, text=msg)
             return
+
+        if hours > 168 and hours < 673:
+            msg = '<@{}>: This might take a minute or two,',
+                  'chill for a sec...'.format(ping_name)
+            self.sc.api_call('chat.postMessage', as_user=True,
+                             channel=chan, text=msg)
 
         now = time.time()
         for item in self.subreddit.get_mod_log(limit=None):
