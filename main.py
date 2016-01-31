@@ -7,6 +7,7 @@ import sys
 import json
 import time
 import signal
+import logging
 import collections
 import praw
 from prawoauth2 import PrawOAuth2Mini as pmini
@@ -25,6 +26,8 @@ from slackclient import SlackClient
 # everything here: https://api.slack.com/methods
 #
 # This also uses Real Time Messaging API
+
+logging.basicConfig(filename=logs.log, level=logging.DEBUG)
 
 
 class lazybot(object):
