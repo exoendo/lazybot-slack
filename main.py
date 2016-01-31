@@ -188,8 +188,8 @@ class lazybot(object):
             return
 
         if hours > 168 and hours < 673:
-            msg = '<@{}>: This might take a minute or two,',
-                  'chill for a sec...'.format(ping_name)
+            msg = ('<@{}>: This might take a minute or two,'
+                  ' chill for a sec...'.format(ping_name))
             self.sc.api_call('chat.postMessage', as_user=True,
                              channel=chan, text=msg)
 
