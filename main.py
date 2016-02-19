@@ -266,7 +266,7 @@ class lazybot(object):
                          channel=chan, text=msg)
 
     def run(self):
-        signal.signal(signal.SIGTERM, self.handle)
+        #signal.signal(signal.SIGTERM, self.handle)
         while True:
             self.oauth.refresh()
             data = self.sc.rtm_read()
