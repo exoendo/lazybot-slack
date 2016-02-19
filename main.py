@@ -308,6 +308,9 @@ class lazybot(object):
                     self.sc.api_call('chat.postMessage', as_user=True,
                                      channel=chan, text=msg)
 
+            except KeyError:
+                pass
+
 if __name__ == "__main__":
     l = lazybot(os.environ['slack_token'])
     l.reddit_connect('politics')
