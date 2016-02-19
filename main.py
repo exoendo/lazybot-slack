@@ -282,9 +282,6 @@ class lazybot(object):
 
             try:
 
-                if re.match(r'~fullmods', data[0]['text']):
-                    self.fullmods(data)
-
                 elif re.match(r'~unmod', data[0]['text']):
                     self.unmod(data)
 
