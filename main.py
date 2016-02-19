@@ -282,7 +282,7 @@ class lazybot(object):
 
             try:
 
-                elif re.match(r'~unmod', data[0]['text']):
+                if re.match(r'~unmod', data[0]['text']):
                     self.unmod(data)
 
                 elif re.match(r'~modlog \d+$', data[0]['text']):
