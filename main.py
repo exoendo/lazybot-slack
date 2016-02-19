@@ -143,29 +143,6 @@ class lazybot(object):
                          channel=chan, text=msg)
         sys.exit(0)
 
-    def fullmods(self, data):
-        ''' Fetches a list of Full Mods from politicsmod '''
-
-        user_id = data[0]['user']
-        ping_name = self.d[user_id]
-        chan = data[0]['channel']
-
-        self.sc.api_call('chat.postMessage', as_user=True,
-                         channel=chan, text='(One moment...)')
-
-        msg = 'Paging Full Mods: '
-        self.subreddit = self.r.get_subreddit('politicsmod')
-        ignore_mods = ['BritishEnglishPolice', 'PoliticsModeratorBot']
-
-        for item in self.subreddit.get_moderators():
-            if item.name in ignore_mods:
-                continue
-            msg += '<@{}> | '.format(item.name)
-
-        self.subreddit = self.r.get_subreddit('politics')
-
-        self.sc.api_call('chat.postMessage', as_user=True,
-                         channel=chan, text=msg)
 
     def modlog(self, data):
         ''' Gets Moderator Log actions for the last 1-168 hours '''
@@ -335,6 +312,6 @@ class lazybot(object):
                                      channel=chan, text=msg)
 
 if __name__ == "__main__":
-    b = lazybot(os.environ['slack_token'])
-    b.reddit_connect('politics')
-    b.run()
+    l = lazybot(os.environ['slack_token'])
+    l.reddit_connect('politics')
+    l.run()
