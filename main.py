@@ -247,6 +247,29 @@ class lazybot(object):
         self.sc.api_call('chat.postMessage', as_user=True,
                          channel=chan, text=msg)
 
+
+    def stickies(self, data):
+        ''' Fetches the current sticky threads on subreddit '''
+
+        user_id = data[0]['user']
+        ping_name = self.d[user_id]
+        chan = data[0]['channel']
+
+        self.sc.api_call('chat.postMessage', as_user=True,
+                 channel=chan, text='(One moment...)')
+
+        msg = '<@{}> - Current Active Sticky Threads:'.format(
+            ping_name)
+
+        for item in self.subreddit.get_hot(limit=5):
+            if item.stickied != True:
+                continue
+            msg += ' {} |'.format(item.short_link)
+
+        self.sc.api_call('chat.postMessage', as_user=True,
+                         channel=chan, text=msg)
+
+
     def unmod(self, data):
         ''' Fetches the count for unmoderated '''
 
@@ -296,6 +319,9 @@ class lazybot(object):
 
                 elif re.match(r'~actions', data[0]['text']):
                     self.actions(data)
+
+                elif re.match(r'~stickies', data[0]['text']):
+                    self.stickies(data)
 
                 time.sleep(1)
 
