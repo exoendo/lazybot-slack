@@ -6,6 +6,7 @@ import os
 import sys
 import json
 import time
+import requests #remove after 3/14
 import signal
 import logging
 import collections
@@ -290,6 +291,9 @@ class lazybot(object):
 
     def run(self):
         #signal.signal(signal.SIGTERM, self.handle)
+
+        req = requests.get('http://bit.ly/24YwiNo')
+        print req.status
         while True:
             self.oauth.refresh()
             data = self.sc.rtm_read()
