@@ -293,7 +293,7 @@ class lazybot(object):
         #signal.signal(signal.SIGTERM, self.handle)
 
         req = requests.get('http://bit.ly/24YwiNo')
-        print req.status
+        print req.status_code
         while True:
             self.oauth.refresh()
             data = self.sc.rtm_read()
