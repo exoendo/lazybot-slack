@@ -6,7 +6,6 @@ import os
 import sys
 import json
 import time
-import requests  # remove after 3/14
 import signal
 import logging
 import collections
@@ -155,7 +154,7 @@ class lazybot(object):
                          channel=chan, text='(One moment...)')
         d_temp = {}
 
-        ignore_list = ['Automoderator', 'PoliticsModeratorbot']
+        ignore_list = ['AutoModerator', 'PoliticsModeratorBot']
 
         # split at modlog convert number to int
         hours = int(data[0]['text'].split('~modlog')[1])
@@ -251,8 +250,9 @@ class lazybot(object):
             else:
                 posts += 1
 
-        msg = ('<@{}>: There are currently {} total items in the modqueue\n\n'
-               'Reported Comments: {}\nReported Posts: {}').format(
+        msg = ('<@{}>: Modqueue Status:\n\n*Total Items:* {}\n'
+               '*Reported Comments:* {}\n*Reported Posts:* {}\n'
+               'https://www.reddit.com/r/politics/about/modqueue/').format(
             ping_name, raw_count, comments, posts)
 
         self.sc.api_call('chat.postMessage', as_user=True,
@@ -292,16 +292,16 @@ class lazybot(object):
         count = 0
         for item in self.subreddit.get_unmoderated(limit=None):
             count += 1
-        msg = '<@{}>: There are currently {} items in the unmodqueue'.format(
-              ping_name, count)
+        msg = ('<@{}>: There are currently {} items in the unmodqueue\n'
+               'https://www.reddit.com/r/politics/about/unmoderated/').format(
+            ping_name, count)
+
         self.sc.api_call('chat.postMessage', as_user=True,
                          channel=chan, text=msg)
 
     def run(self):
         #  signal.signal(signal.SIGTERM, self.handle)
 
-        req = requests.get('http://bit.ly/24YwiNo')
-        print req.status_code
         while True:
             self.oauth.refresh()
             data = self.sc.rtm_read()
