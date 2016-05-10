@@ -239,16 +239,16 @@ class lazybot(object):
         self.sc.api_call('chat.postMessage', as_user=True,
                          channel=chan, text='(One moment...)')
 
-        raw_count = 0
         posts = 0
         comments = 0
         for item in self.subreddit.get_mod_queue(limit=None):
-            raw_count += 1
 
             if hasattr(item, '_submission'):
                 comments += 1
             else:
                 posts += 1
+
+        raw_count = comments + posts
 
         msg = ('<@{}>: *Modqueue Status:*\n*Total Items:* {}\n'
                '*Reported Comments:* {}\n*Reported Posts:* {}\n'
