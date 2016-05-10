@@ -250,7 +250,7 @@ class lazybot(object):
             else:
                 posts += 1
 
-        msg = ('<@{}>: Modqueue Status:\n\n*Total Items:* {}\n'
+        msg = ('<@{}>: *Modqueue Status:*\n*Total Items:* {}\n'
                '*Reported Comments:* {}\n*Reported Posts:* {}\n'
                'https://www.reddit.com/r/politics/about/modqueue/').format(
             ping_name, raw_count, comments, posts)
