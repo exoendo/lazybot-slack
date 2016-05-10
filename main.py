@@ -6,7 +6,7 @@ import os
 import sys
 import json
 import time
-import requests #remove after 3/14
+import requests  # remove after 3/14
 import signal
 import logging
 import collections
@@ -144,7 +144,6 @@ class lazybot(object):
                          channel=chan, text=msg)
         sys.exit(0)
 
-
     def modlog(self, data):
         ''' Gets Moderator Log actions for the last 1-168 hours '''
 
@@ -155,6 +154,8 @@ class lazybot(object):
         self.sc.api_call('chat.postMessage', as_user=True,
                          channel=chan, text='(One moment...)')
         d_temp = {}
+
+        ignore_list = ['Automoderator', 'PoliticsModeratorbot']
 
         # split at modlog convert number to int
         hours = int(data[0]['text'].split('~modlog')[1])
@@ -179,7 +180,7 @@ class lazybot(object):
             ping_name, hours)
 
         for info in collections.Counter(d_temp).most_common():
-            if info[0] == 'AutoModerator':
+            if info[0] in ignore_list:
                 continue
             # We are inserting a zero-width space so no one in chan is pinged
             # Info[0][0] = first letter, \u200B = Space, info[0][1:] = the rest
@@ -239,15 +240,23 @@ class lazybot(object):
         self.sc.api_call('chat.postMessage', as_user=True,
                          channel=chan, text='(One moment...)')
 
-        count = 0
+        raw_count = 0
+        posts = 0
+        comments = 0
         for item in self.subreddit.get_mod_queue(limit=None):
-            count += 1
-        msg = '<@{}>: There are currently {} items in the modqueue'.format(
-              ping_name, count)
+            raw_count += 1
+
+            if hasattr(item, '_submission'):
+                comments += 1
+            else:
+                posts += 1
+
+        msg = ('<@{}>: There are currently {} total items in the modqueue\n\n'
+               'Reported Comments: {}\nReported Posts: {}').format(
+            ping_name, raw_count, comments, posts)
 
         self.sc.api_call('chat.postMessage', as_user=True,
                          channel=chan, text=msg)
-
 
     def stickies(self, data):
         ''' Fetches the current sticky threads on subreddit '''
@@ -257,19 +266,18 @@ class lazybot(object):
         chan = data[0]['channel']
 
         self.sc.api_call('chat.postMessage', as_user=True,
-                 channel=chan, text='(One moment...)')
+                         channel=chan, text='(One moment...)')
 
         msg = '<@{}> - Current Active Sticky Threads:'.format(
             ping_name)
 
         for item in self.subreddit.get_hot(limit=5):
-            if item.stickied != True:
+            if not item.stickied:
                 continue
             msg += ' {} |'.format(item.short_link)
 
         self.sc.api_call('chat.postMessage', as_user=True,
                          channel=chan, text=msg)
-
 
     def unmod(self, data):
         ''' Fetches the count for unmoderated '''
@@ -290,7 +298,7 @@ class lazybot(object):
                          channel=chan, text=msg)
 
     def run(self):
-        #signal.signal(signal.SIGTERM, self.handle)
+        #  signal.signal(signal.SIGTERM, self.handle)
 
         req = requests.get('http://bit.ly/24YwiNo')
         print req.status_code
