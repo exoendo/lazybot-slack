@@ -252,8 +252,8 @@ class lazybot(object):
 
         msg = ('<@{}>: *Modqueue Status:*\n*Total Items:* {}\n'
                '*Reported Comments:* {}\n*Reported Posts:* {}\n'
-               'https://www.reddit.com/r/politics/about/modqueue/').format(
-            ping_name, raw_count, comments, posts)
+               'https://www.reddit.com/r/{}/about/modqueue/').format(
+            ping_name, raw_count, comments, posts, self.subreddit)
 
         self.sc.api_call('chat.postMessage', as_user=True,
                          channel=chan, text=msg)
@@ -293,8 +293,8 @@ class lazybot(object):
         for item in self.subreddit.get_unmoderated(limit=None):
             count += 1
         msg = ('<@{}>: There are currently {} items in the unmodqueue\n'
-               'https://www.reddit.com/r/politics/about/unmoderated/').format(
-            ping_name, count)
+               'https://www.reddit.com/r/{}/about/unmoderated/').format(
+            ping_name, count, self.subreddit)
 
         self.sc.api_call('chat.postMessage', as_user=True,
                          channel=chan, text=msg)
